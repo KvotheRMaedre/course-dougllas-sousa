@@ -33,4 +33,8 @@ public class AuthorService {
     public List<Author> search(String name, String nationality) {
         return authorRepository.findByNameAndNationality(name, nationality);
     }
+
+    public void update(Author author) {
+        authorRepository.save(author);
+    }
 }
