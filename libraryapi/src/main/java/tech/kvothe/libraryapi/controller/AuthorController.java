@@ -22,8 +22,8 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody AuthorDTO request) {
-        var author = authorService.save(request);
+    public ResponseEntity<Void> save(@RequestBody AuthorDTO request) {
+        var author = authorService.save(request.toEntity());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

@@ -1,9 +1,9 @@
 package tech.kvothe.libraryapi.service;
 
 import org.springframework.stereotype.Service;
-import tech.kvothe.libraryapi.dto.AuthorDTO;
 import tech.kvothe.libraryapi.model.Author;
 import tech.kvothe.libraryapi.repository.AuthorRepository;
+import tech.kvothe.libraryapi.validator.AuthorValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +13,16 @@ import java.util.UUID;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorValidator authorValidator;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
         this.authorRepository = authorRepository;
+        this.authorValidator = authorValidator;
     }
 
-    public Author save(AuthorDTO authorDTO) {
-        return authorRepository.save(authorDTO.toEntity());
+    public Author save(Author author) {
+        authorValidator.validateDuplicates(author);
+        return authorRepository.save(author);
     }
 
     public Optional<Author> getById(String id) {
@@ -35,6 +38,7 @@ public class AuthorService {
     }
 
     public void update(Author author) {
+        authorValidator.validateDuplicates(author);
         authorRepository.save(author);
     }
 }
