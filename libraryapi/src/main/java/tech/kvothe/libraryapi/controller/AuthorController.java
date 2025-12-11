@@ -1,5 +1,6 @@
 package tech.kvothe.libraryapi.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,7 +23,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody AuthorDTO request) {
+    public ResponseEntity<Void> save(@RequestBody @Valid AuthorDTO request) {
         var author = authorService.save(request.toEntity());
 
         URI location = ServletUriComponentsBuilder
@@ -82,7 +83,7 @@ public class AuthorController {
 
     @PutMapping("{id}")
     public ResponseEntity<Void> update(@PathVariable("id") String id,
-                                       @RequestBody AuthorDTO request) {
+                                       @RequestBody @Valid AuthorDTO request) {
         var authorOptional = authorService.getById(id);
 
         if (authorOptional.isPresent()) {

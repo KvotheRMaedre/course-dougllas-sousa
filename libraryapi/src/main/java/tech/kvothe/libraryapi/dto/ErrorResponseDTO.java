@@ -12,4 +12,8 @@ public record ErrorResponseDTO(int status, String message, List<ParamErrorDTO> e
     public static ErrorResponseDTO conflict(String message) {
         return new ErrorResponseDTO(HttpStatus.CONFLICT.value(), message, List.of());
     }
+
+    public static ErrorResponseDTO unprocessableEntity(String message, List<ParamErrorDTO> errors) {
+        return new ErrorResponseDTO(HttpStatus.UNPROCESSABLE_ENTITY.value(), message, errors);
+    }
 }
