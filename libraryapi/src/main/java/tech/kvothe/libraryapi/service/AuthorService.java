@@ -1,6 +1,7 @@
 package tech.kvothe.libraryapi.service;
 
 import org.springframework.stereotype.Service;
+import tech.kvothe.libraryapi.exception.OperationNotAllowedException;
 import tech.kvothe.libraryapi.model.Author;
 import tech.kvothe.libraryapi.repository.AuthorRepository;
 import tech.kvothe.libraryapi.validator.AuthorValidator;
@@ -30,6 +31,9 @@ public class AuthorService {
     }
 
     public void delete(Author author) {
+        if (authorValidator.hasBook(author))
+            throw new OperationNotAllowedException("Não é permitido deletar um autor que possui livros cadastrados.");
+
         authorRepository.delete(author);
     }
 

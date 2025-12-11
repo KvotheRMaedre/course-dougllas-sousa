@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.kvothe.libraryapi.dto.ErrorResponseDTO;
 import tech.kvothe.libraryapi.exception.DuplicatedResourceException;
+import tech.kvothe.libraryapi.exception.OperationNotAllowedException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -12,6 +13,18 @@ public class ExceptionHandlerController {
     @ExceptionHandler(DuplicatedResourceException.class)
     public ResponseEntity<ErrorResponseDTO>handleDuplicateResourceException(DuplicatedResourceException exception) {
         var errorDto = ErrorResponseDTO.conflict(exception.getMessage());
+        return ResponseEntity.status(errorDto.status()).body(errorDto);
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<ErrorResponseDTO>handleOperationNotAllowedException(OperationNotAllowedException exception) {
+        var errorDto = ErrorResponseDTO.defaultResponse(exception.getMessage());
+        return ResponseEntity.status(errorDto.status()).body(errorDto);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDTO>handleIllegalArgumentException(IllegalArgumentException exception) {
+        var errorDto = ErrorResponseDTO.defaultResponse(exception.getMessage());
         return ResponseEntity.status(errorDto.status()).body(errorDto);
     }
 }
