@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("authors")
 
-public class AuthorController {
+public class AuthorController implements GenericController{
 
     private final AuthorService authorService;
     private final AuthorMapper mapper;
@@ -30,12 +30,7 @@ public class AuthorController {
     public ResponseEntity<Void> save(@RequestBody @Valid AuthorDTO request) {
         var author = authorService.save(mapper.toEntity(request));
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(author.getId())
-                .toUri();
-
+        URI location = generateHeaderLocation(author.getId());
         return ResponseEntity.created(location).build();
     }
 
