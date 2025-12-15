@@ -1,5 +1,7 @@
 package tech.kvothe.libraryapi.service;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import tech.kvothe.libraryapi.exception.OperationNotAllowedException;
 import tech.kvothe.libraryapi.model.Author;
@@ -39,6 +41,21 @@ public class AuthorService {
 
     public List<Author> search(String name, String nationality) {
         return authorRepository.findByNameAndNationality(name, nationality);
+    }
+
+    public List<Author> searchByExample(String name, String nationality) {
+        var author = new Author();
+        author.setName(name);
+        author.setNationality(nationality);
+
+        ExampleMatcher exampleMatcher = ExampleMatcher
+                .matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        var authorExample = Example.of(author, exampleMatcher);
+        return authorRepository.findAll(authorExample);
     }
 
     public void update(Author author) {
