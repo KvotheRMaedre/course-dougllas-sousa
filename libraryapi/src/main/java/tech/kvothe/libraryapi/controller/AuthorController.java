@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.kvothe.libraryapi.dto.AuthorDTO;
 import tech.kvothe.libraryapi.dto.AuthorResponseDTO;
+import tech.kvothe.libraryapi.mapper.AuthorMapper;
 import tech.kvothe.libraryapi.model.Author;
 import tech.kvothe.libraryapi.service.AuthorService;
 
@@ -14,17 +15,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("authors")
+
 public class AuthorController {
 
     private final AuthorService authorService;
+    private final AuthorMapper mapper;
 
-    public AuthorController(AuthorService authorService) {
+    public AuthorController(AuthorService authorService, AuthorMapper mapper) {
         this.authorService = authorService;
+        this.mapper = mapper;
     }
 
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid AuthorDTO request) {
-        var author = authorService.save(request.toEntity());
+        var author = authorService.save(mapper.toEntity(request));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -37,20 +41,12 @@ public class AuthorController {
 
     @GetMapping("{id}")
     public ResponseEntity<AuthorResponseDTO> getDetails(@PathVariable String id) {
-        var authorOptional = authorService.getById(id);
-
-        if (authorOptional.isPresent()) {
-            var author = authorOptional.get();
-            var response = new AuthorResponseDTO(
-                    author.getId(),
-                    author.getName(),
-                    author.getBirthday(),
-                    author.getNationality()
-            );
-            return ResponseEntity.ok(response);
-        }
-
-        return ResponseEntity.notFound().build();
+        return authorService.getById(id)
+                .map(author -> {
+                    AuthorResponseDTO dto = mapper.toDto(author);
+                    return ResponseEntity.ok(dto);
+                })
+                .orElseGet(() ->  ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")
@@ -71,14 +67,10 @@ public class AuthorController {
 
         List<Author> search = authorService.search(name, nationality);
 
-        List<AuthorResponseDTO> test = search.stream().map(
-                author -> new AuthorResponseDTO(
-                        author.getId(),
-                        author.getName(),
-                        author.getBirthday(),
-                        author.getNationality()
-                )).toList();
-        return ResponseEntity.ok(test);
+        List<AuthorResponseDTO> listAuthor = search.stream()
+                .map(mapper::toDto)
+                .toList();
+        return ResponseEntity.ok(listAuthor);
     }
 
     @PutMapping("{id}")

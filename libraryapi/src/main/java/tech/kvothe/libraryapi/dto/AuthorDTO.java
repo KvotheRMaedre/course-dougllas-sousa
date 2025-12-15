@@ -11,7 +11,4 @@ import java.time.LocalDate;
 public record AuthorDTO(@NotBlank @Size(min = 2, max = 100) String name,
                         @NotNull @Past LocalDate birthday,
                         @NotBlank @Size(min = 2, max = 50)String nationality) {
-    public Author toEntity() {
-        return new Author(name, birthday, nationality);
-    }
 }
