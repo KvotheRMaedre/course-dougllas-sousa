@@ -8,7 +8,7 @@ import tech.kvothe.libraryapi.dto.BookResponseDTO;
 import tech.kvothe.libraryapi.model.Book;
 import tech.kvothe.libraryapi.repository.AuthorRepository;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = AuthorMapper.class)
 public abstract class BookMapper {
 
     @Autowired
