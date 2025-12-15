@@ -7,9 +7,11 @@ import tech.kvothe.libraryapi.dto.BookDTO;
 import tech.kvothe.libraryapi.dto.BookResponseDTO;
 import tech.kvothe.libraryapi.mapper.BookMapper;
 import tech.kvothe.libraryapi.model.Book;
+import tech.kvothe.libraryapi.model.BookGenre;
 import tech.kvothe.libraryapi.service.BookService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -49,5 +51,16 @@ public class BookController implements GenericController{
                     return ResponseEntity.noContent().build();
                 }).orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BookResponseDTO>> search(@RequestParam(value = "isbn", required = false) String isbn,
+                                                        @RequestParam(value = "title", required = false) String title,
+                                                        @RequestParam(value = "author-name", required = false) String authorName,
+                                                        @RequestParam(value = "genre", required = false) BookGenre genre,
+                                                        @RequestParam(value = "publication-year", required = false) Integer publicationYear) {
+        List<Book> search = bookService.search(isbn, title, authorName, genre, publicationYear);
+        List<BookResponseDTO> listSearch = search.stream().map(mapper::toDto).toList();
+        return ResponseEntity.ok(listSearch);
     }
 }
