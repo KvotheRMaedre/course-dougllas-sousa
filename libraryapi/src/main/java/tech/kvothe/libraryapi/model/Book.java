@@ -20,7 +20,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "isbn", nullable = false, length = 20)
+    @Column(name = "isbn", nullable = false, length = 20, unique = true)
     private String isbn;
 
     @Column(name = "title", nullable = false, length = 150)
