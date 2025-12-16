@@ -1,5 +1,8 @@
 package tech.kvothe.libraryapi.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tech.kvothe.libraryapi.model.Book;
@@ -8,7 +11,6 @@ import tech.kvothe.libraryapi.repository.BookRepository;
 import tech.kvothe.libraryapi.repository.specs.BookSpecs;
 import tech.kvothe.libraryapi.validator.BookValidator;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,7 +39,13 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public List<Book> search(String isbn, String title, String authorName, BookGenre genre, Integer publicationYear) {
+    public Page<Book> search(String isbn,
+                             String title,
+                             String authorName,
+                             BookGenre genre,
+                             Integer publicationYear,
+                             Integer page,
+                             Integer pageSize) {
         Specification<Book> specs = Specification
                 .where(((root, query, builder) -> builder.conjunction()));
 
@@ -56,7 +64,8 @@ public class BookService {
         if (authorName != null)
             specs = specs.and(BookSpecs.authorNameLike(authorName));
 
-        return bookRepository.findAll(specs);
+        Pageable pageRequest = PageRequest.of(page, pageSize);
+        return bookRepository.findAll(specs, pageRequest);
     }
 
     public void update(Book book) {

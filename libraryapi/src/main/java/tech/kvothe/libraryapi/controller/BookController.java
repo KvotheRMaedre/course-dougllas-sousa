@@ -1,6 +1,7 @@
 package tech.kvothe.libraryapi.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.kvothe.libraryapi.dto.BookDTO;
@@ -54,14 +55,17 @@ public class BookController implements GenericController{
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> search(@RequestParam(value = "isbn", required = false) String isbn,
+    public ResponseEntity<Page<BookResponseDTO>> search(@RequestParam(value = "isbn", required = false) String isbn,
                                                         @RequestParam(value = "title", required = false) String title,
                                                         @RequestParam(value = "author-name", required = false) String authorName,
                                                         @RequestParam(value = "genre", required = false) BookGenre genre,
-                                                        @RequestParam(value = "publication-year", required = false) Integer publicationYear) {
-        List<Book> search = bookService.search(isbn, title, authorName, genre, publicationYear);
-        List<BookResponseDTO> listSearch = search.stream().map(mapper::toDto).toList();
-        return ResponseEntity.ok(listSearch);
+                                                        @RequestParam(value = "publication-year", required = false) Integer publicationYear,
+                                                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                        @RequestParam(value = "page-size", defaultValue = "10") Integer pageSize) {
+
+        var search = bookService.search(isbn, title, authorName, genre, publicationYear, page, pageSize);
+        Page<BookResponseDTO> result = search.map(mapper::toDto);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("{id}")
