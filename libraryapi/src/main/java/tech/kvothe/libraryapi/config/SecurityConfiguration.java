@@ -11,6 +11,7 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import tech.kvothe.libraryapi.security.LoginSocialSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -18,11 +19,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoginSocialSuccessHandler successHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(configurer -> {
+                    configurer.successHandler(successHandler);
+                })
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizer -> {
                     authorizer.requestMatchers("/login").permitAll();
