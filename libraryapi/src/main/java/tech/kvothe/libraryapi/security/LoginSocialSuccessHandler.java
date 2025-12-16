@@ -13,10 +13,12 @@ import tech.kvothe.libraryapi.model.User;
 import tech.kvothe.libraryapi.service.UserService;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    private static final String DEFAULT_PASSWORD = "202200200220";
     private final UserService userService;
 
     public LoginSocialSuccessHandler(UserService userService) {
@@ -33,10 +35,27 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
 
         User user = userService.getByEmail(email);
 
+        if (user == null)
+            user = singUp(email);
+
         CustomAuthentication customAuthentication = new CustomAuthentication(user);
         SecurityContextHolder.getContext().setAuthentication(customAuthentication);
 
         super.onAuthenticationSuccess(request, response, customAuthentication);
 
+    }
+
+    public User singUp(String email) {
+        User user = new User();
+        user.setEmail(email);
+        user.setLogin(getLoginFromEmail(email));
+        user.setPassword(DEFAULT_PASSWORD);
+        user.setRoles(List.of("USER"));
+
+        return userService.save(user);
+    }
+
+    private String getLoginFromEmail(String email) {
+        return email.substring(0, email.indexOf("@"));
     }
 }
