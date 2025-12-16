@@ -26,5 +26,6 @@ CREATE TABLE users (
     id uuid not null primary key,
     login varchar(20) not null,
     password varchar(300) not null,
+    email varchar(150) unique not null,
     roles varchar[]
 );
