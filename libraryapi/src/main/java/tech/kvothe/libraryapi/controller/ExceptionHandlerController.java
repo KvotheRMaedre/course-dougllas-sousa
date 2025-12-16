@@ -20,7 +20,7 @@ public class ExceptionHandlerController {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDTO handleUnhandledExceptions(RuntimeException exception) {
-        return new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "", List.of());
+        return new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), List.of());
     }
 
     @ExceptionHandler(DuplicatedResourceException.class)
