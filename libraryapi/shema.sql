@@ -21,3 +21,10 @@ CREATE TABLE book (
     id_user uuid
 	constraint chk_genre check (genre in ('FICCAO', 'FANTASIA', 'MISTERIO', 'ROMANCE', 'BIOGRAFIA', 'CIÊNCIA'))
 );
+
+CREATE TABLE users (
+    id uuid not null primary key,
+    login varchar(20) not null,
+    password varchar(300) not null,
+    roles varchar[]
+);
