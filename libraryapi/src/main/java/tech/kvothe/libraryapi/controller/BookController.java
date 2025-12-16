@@ -3,6 +3,7 @@ package tech.kvothe.libraryapi.controller;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.kvothe.libraryapi.dto.BookDTO;
 import tech.kvothe.libraryapi.dto.BookResponseDTO;
@@ -12,11 +13,11 @@ import tech.kvothe.libraryapi.model.BookGenre;
 import tech.kvothe.libraryapi.service.BookService;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("books")
+@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class BookController implements GenericController{
 
     private final BookService bookService;

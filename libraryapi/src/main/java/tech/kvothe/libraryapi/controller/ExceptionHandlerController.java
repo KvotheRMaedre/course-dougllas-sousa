@@ -2,6 +2,7 @@ package tech.kvothe.libraryapi.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,4 +58,12 @@ public class ExceptionHandlerController {
     public ErrorResponseDTO handleInvalidFieldException(InvalidFieldException exception) {
         return ErrorResponseDTO.unprocessableEntity("Erro de validação", List.of(new ParamErrorDTO(exception.getField(), exception.getMessage())));
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponseDTO handleAccessDeniedException(AccessDeniedException exception) {
+        return new ErrorResponseDTO(HttpStatus.FORBIDDEN.value(),"Acesso negado", List.of());
+    }
+
+
 }

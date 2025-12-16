@@ -2,6 +2,7 @@ package tech.kvothe.libraryapi.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.kvothe.libraryapi.dto.AuthorDTO;
 import tech.kvothe.libraryapi.dto.AuthorResponseDTO;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("authors")
-
+@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class AuthorController implements GenericController{
 
     private final AuthorService authorService;
@@ -27,9 +28,11 @@ public class AuthorController implements GenericController{
 
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid AuthorDTO request) {
-        var author = authorService.save(mapper.toEntity(request));
+        Author author = mapper.toEntity(request);
+        authorService.save(author);
 
         URI location = generateHeaderLocation(author.getId());
+
         return ResponseEntity.created(location).build();
     }
 

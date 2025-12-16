@@ -3,6 +3,7 @@ package tech.kvothe.libraryapi.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,6 +16,7 @@ import tech.kvothe.libraryapi.service.UserService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
     @Bean
@@ -25,9 +27,6 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizer -> {
                     authorizer.requestMatchers("/login").permitAll();
-                    authorizer.requestMatchers("/authors/**").hasRole("ADMIN");
-                    authorizer.requestMatchers("/books/**").hasAnyRole("USER", "ADMIN");
-                    authorizer.requestMatchers("/users/**").hasAnyRole("USER", "ADMIN");
                     authorizer.anyRequest().authenticated();
                 })
                 .build();
