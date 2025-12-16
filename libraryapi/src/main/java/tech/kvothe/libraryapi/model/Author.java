@@ -38,8 +38,9 @@ public class Author {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "id_user")
-    private UUID idUser;
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
 
     @OneToMany(mappedBy = "author")
     private List<Book> books;

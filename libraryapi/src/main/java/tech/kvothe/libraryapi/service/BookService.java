@@ -18,16 +18,19 @@ import java.util.UUID;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final SecurityService securityService;
     private final BookValidator bookValidator;
 
-    public BookService(BookRepository bookRepository, BookValidator bookValidator) {
+    public BookService(BookRepository bookRepository, SecurityService securityService, BookValidator bookValidator) {
         this.bookRepository = bookRepository;
+        this.securityService = securityService;
         this.bookValidator = bookValidator;
     }
 
     public Book save(Book book) {
         bookValidator.validateDuplicates(book);
         bookValidator.validate(book);
+        book.setUser(securityService.getAuthenticatedUser());
         return bookRepository.save(book);
     }
 

@@ -16,16 +16,19 @@ import java.util.UUID;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final SecurityService securityService;
     private final AuthorValidator authorValidator;
 
-    public AuthorService(AuthorRepository authorRepository, AuthorValidator authorValidator) {
+    public AuthorService(AuthorRepository authorRepository, SecurityService securityService, AuthorValidator authorValidator) {
         this.authorRepository = authorRepository;
+        this.securityService = securityService;
         this.authorValidator = authorValidator;
     }
 
-    public Author save(Author author) {
+    public void save(Author author) {
         authorValidator.validateDuplicates(author);
-        return authorRepository.save(author);
+        author.setUser(securityService.getAuthenticatedUser());
+        authorRepository.save(author);
     }
 
     public Optional<Author> getById(String id) {
