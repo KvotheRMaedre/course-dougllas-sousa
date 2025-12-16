@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.kvothe.libraryapi.dto.ErrorResponseDTO;
 import tech.kvothe.libraryapi.dto.ParamErrorDTO;
 import tech.kvothe.libraryapi.exception.DuplicatedResourceException;
+import tech.kvothe.libraryapi.exception.InvalidFieldException;
 import tech.kvothe.libraryapi.exception.OperationNotAllowedException;
 
 import java.util.List;
@@ -49,5 +50,11 @@ public class ExceptionHandlerController {
                 .toList();
 
         return ErrorResponseDTO.unprocessableEntity("Erro de validação",fieldErrors);
+    }
+
+    @ExceptionHandler(InvalidFieldException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponseDTO handleInvalidFieldException(InvalidFieldException exception) {
+        return ErrorResponseDTO.unprocessableEntity("Erro de validação", List.of(new ParamErrorDTO(exception.getField(), exception.getMessage())));
     }
 }

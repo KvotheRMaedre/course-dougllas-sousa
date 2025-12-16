@@ -6,6 +6,7 @@ import tech.kvothe.libraryapi.model.Book;
 import tech.kvothe.libraryapi.model.BookGenre;
 import tech.kvothe.libraryapi.repository.BookRepository;
 import tech.kvothe.libraryapi.repository.specs.BookSpecs;
+import tech.kvothe.libraryapi.validator.BookValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,16 @@ import java.util.UUID;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookValidator bookValidator;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, BookValidator bookValidator) {
         this.bookRepository = bookRepository;
+        this.bookValidator = bookValidator;
     }
 
     public Book save(Book book) {
+        bookValidator.validateDuplicates(book);
+        bookValidator.validate(book);
         return bookRepository.save(book);
     }
 
@@ -52,5 +57,9 @@ public class BookService {
             specs = specs.and(BookSpecs.authorNameLike(authorName));
 
         return bookRepository.findAll(specs);
+    }
+
+    public void update(Book book) {
+        bookRepository.save(book);
     }
 }
