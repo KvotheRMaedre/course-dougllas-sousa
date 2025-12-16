@@ -2,9 +2,9 @@ package tech.kvothe.libraryapi.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import tech.kvothe.libraryapi.model.User;
+import tech.kvothe.libraryapi.security.CustomAuthentication;
 
 @Component
 public class SecurityService {
@@ -17,7 +17,10 @@ public class SecurityService {
 
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userService.getByLogin(userDetails.getUsername());
+
+        if (authentication instanceof CustomAuthentication customAuthentication)
+            return customAuthentication.getUser();
+
+        return null;
     }
 }
