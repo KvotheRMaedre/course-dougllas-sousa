@@ -28,9 +28,16 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     @Override
     public RegisteredClient findById(String id) {
-        Client client = clientService.getByClientId(id);
+        return null;
+    }
+
+    @Override
+    public RegisteredClient findByClientId(String clientId) {
+        Client client = clientService.getByClientId(clientId);
+
         if (client == null)
             return null;
+
         return RegisteredClient.withId(client.getId().toString())
                 .clientId(client.getClientId())
                 .clientSecret(client.getClientSecret())
@@ -42,10 +49,5 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
                 .tokenSettings(tokenSettings)
                 .clientSettings(clientSettings)
                 .build();
-    }
-
-    @Override
-    public RegisteredClient findByClientId(String clientId) {
-        return null;
     }
 }
