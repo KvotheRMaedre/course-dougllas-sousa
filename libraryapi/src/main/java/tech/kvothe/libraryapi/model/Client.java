@@ -20,7 +20,7 @@ public class Client {
     @Column
     private String clientSecret;
 
-    @Column
+    @Column(name = "redirect_uri")
     private String redirectURI;
 
     @Column
