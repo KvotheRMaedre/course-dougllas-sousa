@@ -1,9 +1,11 @@
 package tech.kvothe.libraryapi.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+@Schema(name = "Error")
 public record ErrorResponseDTO(int status, String message, List<ParamErrorDTO> errors) {
     public static ErrorResponseDTO defaultResponse(String message) {
         return new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), message, List.of());

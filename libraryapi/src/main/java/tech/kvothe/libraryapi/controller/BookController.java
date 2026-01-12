@@ -1,5 +1,9 @@
 package tech.kvothe.libraryapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("books")
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+@Tag(name = "Books")
 public class BookController implements GenericController{
 
     private final BookService bookService;
@@ -29,6 +34,14 @@ public class BookController implements GenericController{
     }
 
     @PostMapping
+    @Operation(summary = "Save", description = "Save new book")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Created successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "400", description = "Validation error"),
+            @ApiResponse(responseCode = "409", description = "Book already exists"),
+
+    })
     public ResponseEntity<Void> save(@RequestBody @Valid BookDTO dto) {
         Book book = bookService.save(mapper.toEntity(dto));
         URI location = generateHeaderLocation(book.getId());

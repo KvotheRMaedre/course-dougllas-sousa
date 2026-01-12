@@ -31,7 +31,6 @@ public class SecurityConfiguration {
                 .oauth2Login(configurer -> {
                     configurer.successHandler(successHandler);
                 })
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizer -> {
                     authorizer.requestMatchers(
                             "/login",
