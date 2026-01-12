@@ -33,7 +33,14 @@ public class SecurityConfiguration {
                 })
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizer -> {
-                    authorizer.requestMatchers("/login").permitAll();
+                    authorizer.requestMatchers(
+                            "/login",
+                            "/v2/api-docs/**",
+                            "/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/webjars/**").permitAll();
                     authorizer.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2Rs -> oauth2Rs.jwt(Customizer.withDefaults()))
